@@ -65,22 +65,6 @@
 #define MIN_TURN_ERROR -3.14159
 #define MAX_TURN_ERROR 3.14159
 
-// Turn PID (based on center error)
-#define PID_CENTERTURN_KP 0.8
-#define PID_CENTERTURN_KI 0.35
-#define PID_CENTERTURN_KD 0.30
-
-#define MIN_CENTERTURN_ERROR -1.0
-#define MAX_CENTERTURN_ERROR 1.0
-
-// Strafe PID (based on center error)
-#define PID_CENTERSTRAFE_KP 0.8
-#define PID_CENTERSTRAFE_KI 0.25
-#define PID_CENTERSTRAFE_KD 0.30
-
-#define MIN_CENTERSTRAFE_ERROR -1.0
-#define MAX_CENTERSTRAFE_ERROR 1.0
-
 // acceptable proximities from base
 #define MAX_DIST_ERROR 20.0 // in cm
 #define MAX_THETA_ERROR DEGREE_15
@@ -116,7 +100,7 @@
 const float NS_ROOM_SCALE[6][4][2] = {
 	// Rosie
 	{{49.2, 37.1}, 
-     {45.4, 57.6}, 
+	 {45.4, 57.6}, 
 	 {59.6, 36.7}, 
 	 {37.4, 53.5}},
 	// Bender
@@ -150,7 +134,7 @@ const float NS_ROOM_SCALE[6][4][2] = {
 // Theta increases counter-clockwise     |
 //    |-door-|                           |
 //                     __4__             |
-//                    |     |		     |
+//                    |     |	         |
 //                  3 |     | 5          |
 //                    |*____|            |
 //                       2               |

@@ -527,18 +527,18 @@ float Camera::centerDistanceError(int color, bool *turn, float *certainty) {
                 // there will be a large area difference if we're too far
                 // to the left. if the area difference is small, we're probably
                 // turned too far left.
-                *certainty = 0.50 - (0.005 * (leftSquare->area - rightSquare->area));
-                if (*certainty < 0.0) {
-                    *certainty = 0.0;
+                *certainty = 0.20 + (0.0025 * (leftSquare->area - rightSquare->area));
+                if (*certainty > 1.0) {
+                    *certainty = 1.0;
                 }
                 return -0.25;
             }
             else {
                 // we should turn left slightly
                 *turn = true;
-                *certainty = 0.50 - (0.005 * (rightSquare->area - leftSquare->area));
-                if (*certainty < 0.0) {
-                    *certainty = 0.0;
+                *certainty = 0.20 + (0.0025 * (rightSquare->area - leftSquare->area));
+                if (*certainty > 1.0) {
+                    *certainty = 1.0;
                 }
                 return 0.25;
 
@@ -736,8 +736,6 @@ float Camera::corridorSlopeError(int color, bool *turn, float *certainty) {
         }
     } 
    
-    //base certainty of turning vs. strafing on intersection data (when available)
-    
     // did we have enough squares on each side to find a line?
     if (leftSide.numSquares >= 2 && rightSide.numSquares >= 2) { 
         float difference = leftSide.slope + rightSide.slope;
@@ -814,28 +812,28 @@ regressionLine Camera::leastSquaresRegression(int color, int side) {
 	        switch (side) {
 	        case IMAGE_LEFT:	
         	    if (curSquare->center.x < center) {
-                    xSum += curSquare->center.x;
-                    ySum += curSquare->center.y;
-	    		    xSqSum += curSquare->center.x * curSquare->center.x;
-	    		    xySum += curSquare->center.x * curSquare->center.y;
-			        ySqSum += curSquare->center.y * curSquare->center.y;
-		        }
-		        break;
+                        xSum += curSquare->center.x;
+                        ySum += curSquare->center.y;
+	    	        xSqSum += curSquare->center.x * curSquare->center.x;
+	    	        xySum += curSquare->center.x * curSquare->center.y;
+		        ySqSum += curSquare->center.y * curSquare->center.y;
+		    }
+		    break;
 	        case IMAGE_RIGHT:
-		        if (curSquare->center.x > center) {
-	    		    xSum += curSquare->center.x;
-	    		    ySum += curSquare->center.y;
-	    		    xSqSum += curSquare->center.x * curSquare->center.x;
-	    		    xySum += curSquare->center.x * curSquare->center.y;
-			        ySqSum += curSquare->center.y * curSquare->center.y;
-		        } 
+		    if (curSquare->center.x > center) {
+	                xSum += curSquare->center.x;
+                        ySum += curSquare->center.y;
+                        xSqSum += curSquare->center.x * curSquare->center.x;
+	    		xySum += curSquare->center.x * curSquare->center.y;
+		        ySqSum += curSquare->center.y * curSquare->center.y;
+	            } 
 		        break;
     		case IMAGE_ALL:
 	    		xSum += curSquare->center.x;
 	    		ySum += curSquare->center.y;
 	    		xSqSum += curSquare->center.x * curSquare->center.x;
 	    		xySum += curSquare->center.x * curSquare->center.y;
-			    ySqSum += curSquare->center.y * curSquare->center.y;
+                        ySqSum += curSquare->center.y * curSquare->center.y;
     			break;
 	        }
 	        curSquare = curSquare->next;
@@ -848,7 +846,7 @@ regressionLine Camera::leastSquaresRegression(int color, int side) {
                            (xSqSum - (result.numSquares * xAvg * xAvg));
         result.slope = (xySum - (result.numSquares * xAvg * yAvg)) / 
                        (xSqSum - (result.numSquares * xAvg * xAvg));
-	    result.rSquared = ((xySum - (result.numSquares * xAvg * yAvg)) * 
+        result.rSquared = ((xySum - (result.numSquares * xAvg * yAvg)) * 
                            (xySum - (result.numSquares * xAvg * yAvg)) / 
                           ((xSqSum - (result.numSquares * xAvg * xAvg)) * 
                            (ySqSum - (result.numSquares * yAvg * yAvg))));
